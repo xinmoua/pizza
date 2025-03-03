@@ -3,9 +3,9 @@ public class SliceoHeaven {
     public String storeAddress;
     public String storeEmail;
     public long storePhone;
-    private String storeMenu;
+    public String storeMenu;
 
-    public String pizzaIngredients;
+    private String pizzaIngredients;
     private double pizzaPrice;
     private String sides;
     private String drinks;
@@ -13,9 +13,15 @@ public class SliceoHeaven {
     private String orderID;
     private double orderTotal;
 
+    private String cardNumber;
+    private String expiryDate;
+    private int cvv;
+
+
     private static final String DEF_ORDER_ID = "DEF-SOH-099";
     private static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
     private static final double DEF_ORDER_TOTAL = 15.00;
+    public static final String BLACKLISTED_CARD = "24745321139078";
 
     public SliceoHeaven() {
         this.orderID = DEF_ORDER_ID;
@@ -33,12 +39,12 @@ public class SliceoHeaven {
         this.drinks = "";
     }
 
-    public String getStoreMenu() {
-        return storeMenu;
+    public String getpizzaIngredients() {
+        return pizzaIngredients;
     }
 
-    public void setStoreMenu(String storeMenu) {
-        this.storeMenu = storeMenu;
+    public void setpizzaIngredients(String pizzaIngredients) {
+        this.pizzaIngredients = pizzaIngredients;
     }
 
     public double getPizzaPrice() {
@@ -88,7 +94,7 @@ public class SliceoHeaven {
         sides = side;
         drinks = drink;
         pizzaPrice = pPrice;
-
+        
         System.out.println("Order accepted!");
         System.out.println("Order is being prepared");
 
@@ -105,6 +111,31 @@ public class SliceoHeaven {
 
     private void makePizza(String piin) {
         pizzaIngredients = piin;
+    }
+    public void processCardPayment(String cardNumber,String expiryDate,int cvv){
+        this.cardNumber = cardNumber;
+        this.expiryDate = expiryDate;
+        this.cvv = cvv;
+        if(cardNumber.length() != 14){
+            System.out.println("Invalid card");
+        }else{
+            if(cardNumber.equals(BLACKLISTED_CARD)){
+                System.out.println("Card is blacklisted. Please use another card");
+            }else{
+            System.out.println("Card accepted");
+            char[] cardarray = cardNumber.toCharArray();
+            int firstCardDigit = cardarray[0] - '0';
+            String bString = cardNumber.substring(10);
+            int lastFourDigits = Integer.parseInt(bString);
+            String cardNumberToDisplay = cardarray[0] + "*********" + bString;
+            System.out.println(cardNumberToDisplay);
+            }
+        }
+    }
+    public void specialOfTheDay(StringBuffer pizzaOfTheDay,StringBuffer sideOfTheDay,String specialPrice){
+        System.out.println(pizzaOfTheDay);
+        System.out.println(sideOfTheDay);
+        System.out.println(specialPrice);
     }
 
     private void printReceipt() {
