@@ -22,10 +22,18 @@ public class SliceoHeaven {
     private long cardNumber;
     private String expiryDate;
     private int cvv;
-
+    
     private String ing1;
     private String ing2;
     private String ing3;
+
+    private int ingChoice1;
+    private int ingChoice2;
+    private int ingChoice3;
+    private int sizeChoice;
+    private int sideDishChoice;
+    private int drinkChoice;
+
     private String pizzaSize;
     private String extraCheese;
     private String sideDish;
@@ -94,52 +102,204 @@ public class SliceoHeaven {
 
     static Scanner scan = new Scanner(System.in);
     public void takeOrder() {
-        System.out.println("Enter three ingredients for your pizza (use spaces to separate ingredients):");
-        String str1 = "";
+        System.out.println("Please pick any three of the following ingredients:");
+        System.out.println("1. Mushroom");
+        System.out.println("2. Paprika");
+        System.out.println("3. Sun-dried tomatoes");
+        System.out.println("4. Chicken");
+        System.out.println("5. Pineapple");
+        System.out.println("Enter any three choices (1, 2, 3,…) separated by spaces:");
+        String str = "";
+        int a = 0;
+        while(a == 0){
         if (scan.hasNextLine()) {
-           str1 = scan.nextLine();
+           str = scan.nextLine();
         }
-        String[] str2 = str1.split(" ");
-        this.ing1 = str2[0];
-        this.ing2 = str2[1];
-        this.ing3 = str2[2];
+        String[] str2 = str.split(" ");
+        for(int b = 0;b < 3;b++){
+            int c = 0;
+            switch (str2[b]) {
+                case "1":
+                break;
+                case "2":
+                break;
+                case "3":
+                break;
+                case "4":
+                break;
+                case "5":
+                break;
+                default:
+                System.out.println("Invalid choice(s). Please pick only from the given list:");
+                c = 1;
+                break;
+            }
+            if(c == 1){
+                break;
+            }
+            if(b == 2){
+                a = 1;
+            }
 
-        System.out.println("Enter size of pizza (Small, Medium, Large):");
-        String str3 = "";
-        if (scan.hasNextLine()) {
-            str3 = scan.nextLine();
+        }
+        this.ingChoice1 = Integer.parseInt(str2[0]);
+        this.ingChoice2 = Integer.parseInt(str2[1]);
+        this.ingChoice3 = Integer.parseInt(str2[2]);
+        this.ing1 = switch(str2[0]){
+            case "1" -> "Mushroom";
+            case "2" -> "Paprika";
+            case "3" -> "Sun-dried tomatoes";
+            case "4" -> "Chicken";
+            case "5" -> "Pineapple";
+            default -> "";
+        };
+        this.ing2 = switch(str2[1]){
+            case "1" -> "Mushroom";
+            case "2" -> "Paprika";
+            case "3" -> "Sun-dried tomatoes";
+            case "4" -> "Chicken";
+            case "5" -> "Pineapple";
+            default -> "";
+        };
+        this.ing3 = switch(str2[2]){
+            case "1" -> "Mushroom";
+            case "2" -> "Paprika";
+            case "3" -> "Sun-dried tomatoes";
+            case "4" -> "Chicken";
+            case "5" -> "Pineapple";
+            default -> "";
+        };
+    }
+
+        System.out.println("What size should your pizza be?");
+        System.out.println("1. Large");
+        System.out.println("2. Medium");
+        System.out.println("3. Small");
+        System.out.println("Enter only one choice (1, 2, or 3):");;
+        int a2 = 0;
+        while(a2 == 0){
+            if (scan.hasNextLine()) {
+            str = scan.nextLine();
          }
-        this.pizzaSize = str3;
-        
+         switch(str){
+            case "1":
+            a2 = 1;
+            break;
+            case "2":
+            a2 = 1;
+            break;
+            case "3":
+            a2 = 1;
+            break;
+            default:
+            System.out.println("Invalid choice(s). Please pick only from the given list:");
+            break;
+         }
+         this.sizeChoice = Integer.parseInt(str);
+         this.pizzaSize = switch(str){
+            case "1" -> "Large";
+            case "2" -> "Medium";
+            case "3" -> "Small";
+            default -> "";
+        };
+    }
+
         System.out.println("Do you want extra cheese (Y/N):");
-        String str4 = "";
         if (scan.hasNextLine()) {
-            str4 = scan.nextLine();
+            str = scan.nextLine();
          }
-        this.extraCheese = str4;
+        this.extraCheese = str;
         
-        System.out.println("Enter one side dish (Calzone, Garlic bread, None):");
-        String str5 = "";
-        if (scan.hasNextLine()) {
-            str5 = scan.nextLine();
+        System.out.println("Following are the side dish that go well with your pizza:");
+        System.out.println("1. Calzone");
+        System.out.println("2. Garlic bread");
+        System.out.println("3. Chicken puff");
+        System.out.println("4. Muffin");
+        System.out.println("5. Nothing for me");
+        System.out.println("What would you like? Pick one (1, 2, 3,…):");
+        int a3 = 0;
+        while(a3 == 0){
+            if (scan.hasNextLine()) {
+            str = scan.nextLine();
          }
-        this.sideDish = str5;
-      
-        System.out.println("Enter drinks(Cold Coffee, Cocoa drink, Coke, None):");
-        String str6 = "";
-        if (scan.hasNextLine()) {
-            str6 = scan.nextLine();
+         switch(str){
+            case "1":
+            a3 = 1;
+            break;
+            case "2":
+            a3 = 1;
+            break;
+            case "3":
+            a3 = 1;
+            break;
+            case "4":
+            a3 = 1;
+            break;
+            case "5":
+            a3 = 1;
+            break;
+            default:
+            System.out.println("Invalid choice(s). Please pick only from the given list:");
+            break;
          }
-        this.drinks = str6;
+         this.sideDishChoice = Integer.parseInt(str);
+         this.sideDish = switch(str){
+            case "1" -> "Calzone";
+            case "2" -> "Garlic bread";
+            case "3" -> "Chicken puff";
+            case "4" -> "Muffin";
+            case "5" -> "Nothing for me";
+            default -> "";
+        };
+    }
+
+        System.out.println("Choose from one of the drinks below. We recommend Coca Cola:");
+        System.out.println("1. Coca Cola");
+        System.out.println("2. Cold coffee");
+        System.out.println("3. Cocoa Drink");
+        System.out.println("4. No drinks for me");
+        System.out.println("Enter your choice:");
+        int a4 = 0;
+        while(a4 == 0){
+            if (scan.hasNextLine()) {
+            str = scan.nextLine();
+         }
+         switch(str){
+            case "1":
+            a4 = 1;
+            break;
+            case "2":
+            a4 = 1;
+            break;
+            case "3":
+            a4 = 1;
+            break;
+            case "4":
+            a4 = 1;
+            break;
+            default:
+            System.out.println("Invalid choice(s). Please pick only from the given list:");
+            break;
+         }
+         this.drinkChoice = Integer.parseInt(str);
+         this.drinks = switch(str){
+            case "1" -> "Coca Cola";
+            case "2" -> "Cold coffee";
+            case "3" -> "Cocoa Drink";
+            case "4" -> "No drinks for me";
+            default -> "";
+        };
+    }
+        
 
         System.out.println("Would you like the chance to pay only half for your order? (Y/N)：");
-        String str7 = "";
         if (scan.hasNextLine()) {
-            str7 = scan.nextLine();
+            str = scan.nextLine();
          }
-        if(str7.equals("Y") || str7.equals("y")){
+        if(str.equals("Y") || str.equals("y")){
             isItYourBirthday();
         }
+
         makeCardPayment();
         processCardPayment();
         scan.close();
@@ -155,34 +315,45 @@ public class SliceoHeaven {
         }
 
         System.out.println("Your order is ready!");
-        printReceipt();
     }
 
     public void isItYourBirthday(){
         System.out.println("What is the day of your birth?(use spaces to '-')\n(Enter in the order of year, month, and day)");
-        String str8 = "";
+        String str = "";
+        int a = 0;
+        int age = 0;
+        int month1 = 0;
+        int day1 = 0;
+        int date2 = 0;
+        int date3 = 0;
+        while(a == 0){
         if (scan.hasNextLine()) {
-            str8 = scan.nextLine();
+            str = scan.nextLine();
          }
-         this.birthdate = str8;
-         String[] str9 = str8.split("-");
-         String d1 = str9[0];
-         String d2 = str9[1];
-         String d3 = str9[2];
+         this.birthdate = str;
+         String[] str9 = str.split("-");
          int date1 = Integer.parseInt(str9[0]);
-         int date2 = Integer.parseInt(str9[1]);
-         int date3 = Integer.parseInt(str9[2]);
+         date2 = Integer.parseInt(str9[1]);
+         date3 = Integer.parseInt(str9[2]);
 
          LocalDate today = LocalDate.now();
          LocalDate someDay = LocalDate.of(date1,date2,date3);
          Period diff = Period.between(someDay, today);
-         int age = diff.getYears();
-         int month1 =  today.getMonthValue();
-         int day1 = today.getDayOfMonth();
+         age = diff.getYears();
+         month1 =  today.getMonthValue();
+         day1 = today.getDayOfMonth();
+         if(age <= 5 || age >= 120){
+            System.out.println("Invalid date. You are either too young or too dead to order.");
+            System.out.println("Please enter a valid date:");
+         }else{
+            a = 1;
+         }
+        }
          this.birthture = 10000*(date2 - month1) + (date3 - day1);
-         System.out.println(age +" "+ month1 +" " + day1 + " " +date2 +" " + date3 +" " +birthture);
-         if(age < 18 && birthture == 0){
+         //System.out.println(age +" "+ month1 +" " + day1 + " " +date2 +" " + date3 +" " +birthture);
+         if(age > 5 && age < 18 && birthture == 0){
             System.out.println("Congratulations! You pay only half the price for your order");
+            this.orderTotal = DEF_ORDER_TOTAL/2;
          }else{
             System.out.println("Too bad! You do not meet the conditions to get our 50% discount");
          }
@@ -190,24 +361,56 @@ public class SliceoHeaven {
 
     public void makeCardPayment(){
         System.out.println("Please enter your card number:");
-        String str1 = "";
+        String str = "";
         if (scan.hasNextLine()) {
-            str1 = scan.nextLine();
+            str = scan.nextLine();
          }
-        this.cardNumber = Long.parseLong(str1);
+        this.cardNumber = Long.parseLong(str);
 
-        System.out.println("Please enter your card’s expiry date:\n(use spaces to '-')(Enter in the order of year, month)");
-        String str2 = "";
+        System.out.println("Please enter your card’s expiry date:\n(use spaces to '-')(Enter in the order of year, month,day)");
+        int a = 0;
+        while(a == 0){
         if (scan.hasNextLine()) {
-            str2 = scan.nextLine();
+            str = scan.nextLine();
          }
-         this.expiryDate = str2;
+         String[] str2 = str.split("-");
+         int date1 = Integer.parseInt(str2[0]);
+         int date2 = Integer.parseInt(str2[1]);
+         int date3 = Integer.parseInt(str2[2]);
+         LocalDate today = LocalDate.now();
+         LocalDate someDay = LocalDate.of(date1,date2,date3);
+         Period diff = Period.between(today,someDay);
+         int year = diff.getYears();
+         int month = diff.getMonths();
+         int day = diff.getDays();
+         if(year > 0){
+            a = 1;
+         }else{
+            if(year == 0){
+                if(month > 0){
+                    a = 1;
+                }else{
+                    if(month == 0){
+                        if(day > 0){
+                            a = 1;
+                        }else{
+                            System.out.println("Please enter the correct date!");
+                        }
+                    }else{
+                        System.out.println("Please enter the correct date!");
+                    }
+                }
+            }else{
+                System.out.println("Please enter the correct date!");
+            }
+         }
+         this.expiryDate = str;
+        }
          System.out.println("Please enter your card’s cvv number:(three digits long)");
-         String str3 = "";
         if (scan.hasNextLine()) {
-            str3 = scan.nextLine();
+            str = scan.nextLine();
          }
-         String cv = str3.substring(0,3);
+         String cv = str.substring(0,3);
          this.cvv = Integer.parseInt(cv);
     }
 
@@ -217,13 +420,26 @@ public class SliceoHeaven {
 
 
     public void processCardPayment(){
+        int a = 0;
+        String str = "";
+        while(a == 0){
         String number = Long.toString(cardNumber);
         String blackCard = Long.toString(blacklistedNumber);
         if(number.length() != 14){
             System.out.println("Invalid card");
+            System.out.println("Please enter right card number:");
+            if (scan.hasNextLine()) {
+                str = scan.nextLine();
+            }
+            this.cardNumber = Long.parseLong(str);
         }else{
             if(number.equals(blackCard)){
                 System.out.println("Card is blacklisted. Please use another card");
+                System.out.println("Please enter right card number:");
+                if (scan.hasNextLine()) {
+                    str = scan.nextLine();
+                }
+                this.cardNumber = Long.parseLong(str);
             }else{
             System.out.println("Card accepted");
             char[] cardarray = number.toCharArray();
@@ -231,8 +447,10 @@ public class SliceoHeaven {
             String bString = number.substring(10);
             int lastFourDigits = Integer.parseInt(bString);
             this.cardNumberToDisplay = cardarray[0] + "*********" + bString;
+            a = 1;
             }
         }
+    }
     }
     public void specialOfTheDay(StringBuffer pizzaOfTheDay,StringBuffer sideOfTheDay,String specialPrice){
         System.out.println(pizzaOfTheDay);
@@ -240,21 +458,17 @@ public class SliceoHeaven {
         System.out.println(specialPrice);
     }
 
-    private void printReceipt() {
-        System.out.println("********RECEIPT********");
-        System.out.println("cardNumber :" + cardNumberToDisplay);
-        System.out.println("cvvNumber :" + cvv);
-        System.out.println("Order ID: " + orderID);
-        System.out.println("Order pizzaIngredients: " + ing1 + " " + ing2 + " " + ing3 +" " + pizzaIngredients);
-        System.out.println("Order size of pizza:" + pizzaSize);
-        System.out.println("Order extra cheese(Y/N):" + extraCheese);
-        System.out.println("Order sides: " + sideDish );
-        System.out.println("Order drinks: " + drinks);
-        System.out.println("Order pizzaPrice: " + pizzaPrice);
-        if(birthture == 0){
-            System.out.println("Order Total: " + orderTotal/2);
-        }else{
-            System.out.println("Order Total: " + orderTotal);
-        }
+    public final String toString(){
+        return "********RECEIPT********" + "\n" +
+        "cardNumber :" + cardNumberToDisplay + "\n" +
+        "cvvNumber :" + cvv + "\n" +
+        "Order ID: " + orderID + "\n" +
+        "Order pizzaIngredients: " + ing1 + " " + ing2 + " " + ing3 +" " + pizzaIngredients + "\n" +
+        "Order size of pizza:" + pizzaSize + "\n" +
+        "Order extra cheese(Y/N):" + extraCheese + "\n" +
+        "Order sides: " + sideDish + "\n" +
+        "Order drinks: " + drinks + "\n" +
+        "Order pizzaPrice: " + pizzaPrice + "\n" +
+        "Order Total: " + orderTotal + "\n";
     }
 }
