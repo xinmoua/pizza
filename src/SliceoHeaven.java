@@ -2,6 +2,7 @@ import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 public class SliceoHeaven {
@@ -42,9 +43,17 @@ public class SliceoHeaven {
     private String cardNumberToDisplay;
     private int birthture;
 
+    private double totalOrderPrice = 0;
+    
+    private String[] pizzasOrdered = new String[10];
+    private String[] pizzaSizesOrdered = new String[10];
+    private String[] sideDishesOrdered = new String[10];
+    private String[] drinksOrdered = new String[20];
+
     private static final String DEF_ORDER_ID = "DEF-SOH-099";
     private static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
     private static final double DEF_ORDER_TOTAL = 15.00;
+    private static final double PIZZA_BASE_PRICE = 10.00;
 
     public SliceoHeaven() {
         this.orderID = DEF_ORDER_ID;
@@ -100,109 +109,246 @@ public class SliceoHeaven {
         this.orderTotal = orderTotal;
     }
 
-    static Scanner scan = new Scanner(System.in);
-    public void takeOrder() {
-        System.out.println("Please pick any three of the following ingredients:");
-        System.out.println("1. Mushroom");
-        System.out.println("2. Paprika");
-        System.out.println("3. Sun-dried tomatoes");
-        System.out.println("4. Chicken");
-        System.out.println("5. Pineapple");
-        System.out.println("Enter any three choices (1, 2, 3,…) separated by spaces:");
-        String str = "";
-        int a = 0;
-        while(a == 0){
-        if (scan.hasNextLine()) {
-           str = scan.nextLine();
+    enum PizzaSelection{
+        PEPPERONI("Pepperoni", "Lots of pepperoni and extra cheese", 18),
+        HAWAIIAN("Hawaiian", "Pineapple, ham, and extra cheese", 22),
+        VEGGIE("Veggie", "Green pepper, onion, tomatoes, mushroom, and black olives", 25),
+        BBQ_CHICKEN("BBQ Chicken", "Chicken in BBQ sauce, bacon, onion, green pepper,and cheddar cheese", 35),
+        EXTRAVAGANZA("Extravaganza", "Pepperoni, ham, Italian sausage, beef, onions,green pepper, mushrooms, black olives, and extra cheese", 45);
+        String pizzaName;
+        String pizzaToppings;
+        double price;
+        private PizzaSelection(String pizzaName,String pizzaToppings,int price){
+            this.pizzaName = pizzaName;
+            this.pizzaToppings = pizzaToppings;
+            this.price = price;
         }
-        String[] str2 = str.split(" ");
-        for(int b = 0;b < 3;b++){
-            int c = 0;
-            switch (str2[b]) {
-                case "1":
-                break;
-                case "2":
-                break;
-                case "3":
-                break;
-                case "4":
-                break;
-                case "5":
-                break;
-                default:
-                System.out.println("Invalid choice(s). Please pick only from the given list:");
-                c = 1;
-                break;
-            }
-            if(c == 1){
-                break;
-            }
-            if(b == 2){
-                a = 1;
-            }
-
+        public String getPizzaName(){
+            return this.pizzaName;
         }
-        this.ingChoice1 = Integer.parseInt(str2[0]);
-        this.ingChoice2 = Integer.parseInt(str2[1]);
-        this.ingChoice3 = Integer.parseInt(str2[2]);
-        this.ing1 = switch(str2[0]){
-            case "1" -> "Mushroom";
-            case "2" -> "Paprika";
-            case "3" -> "Sun-dried tomatoes";
-            case "4" -> "Chicken";
-            case "5" -> "Pineapple";
-            default -> "";
-        };
-        this.ing2 = switch(str2[1]){
-            case "1" -> "Mushroom";
-            case "2" -> "Paprika";
-            case "3" -> "Sun-dried tomatoes";
-            case "4" -> "Chicken";
-            case "5" -> "Pineapple";
-            default -> "";
-        };
-        this.ing3 = switch(str2[2]){
-            case "1" -> "Mushroom";
-            case "2" -> "Paprika";
-            case "3" -> "Sun-dried tomatoes";
-            case "4" -> "Chicken";
-            case "5" -> "Pineapple";
-            default -> "";
-        };
+        public String getPizzaToppings(){
+        return this.pizzaToppings;
+        }
+        public double getPrice(){
+            return this.price;
+        }
+        public String toString(){
+            return this.pizzaName + " with " + this.pizzaToppings + ":€" + this.price;
+        }
     }
+    enum PizzaToppings{
+        HAM("Ham", 2), 
+        PEPPERONI("Pepperoni", 2),
+        BEEF("Beef", 2),
+        CHICKEN("Chicken", 2), 
+        SAUSAGE("Sausage", 2),
+        PINEAPPLE("Pineapple", 1),
+        ONION("Onion", 0.5), 
+        TOMATOES("Tomatoes", 0.4), 
+        GREEN_PEPPER("Green Pepper", 0.5), 
+        BLACK_OLIVES("Black Olives", 0.5), 
+        SPINACH("Spinach", 0.5), 
+        CHEDDAR_CHEESE("Cheddar Cheese", 0.8), 
+        MOZZARELLA_CHEESE("Mozzarella Cheese", 0.8), 
+        FETA_CHEESE("Feta Cheese", 1), 
+        PARMESAN_CHEESE("Parmesan Cheese", 1);
+        String topping;
+        double toppingPrice;
+        private PizzaToppings(String topping,double toppingPrice){
+            this.topping = topping;
+            this.toppingPrice = toppingPrice;
+        }
+        public String getTopping(){
+            return this.topping;
+        }
+        public double getToppingPrice(){
+            return this.toppingPrice;
+        }
+        public String toString(){
+            return this.topping  + ":€" +this.toppingPrice;
+        }
+    }
+    enum PizzaSize{
+        LARGE("Large", 10), 
+        MEDIUM("Medium", 5),
+        SMALL("Small", 0);
+        String pizzaSize;
+        double addToPizzaPrice;
+        private PizzaSize(String pizzaSize,int addToPizzaPrice){
+            this.pizzaSize = pizzaSize;
+            this.addToPizzaPrice = addToPizzaPrice;
+        }
+        public String getPizzaSize(){
+            return this.pizzaSize;
+        }
+        public double getAddToPizzaPrice(){
+            return this.addToPizzaPrice;
+        }
+        public String toString(){
+            return this.pizzaSize + ":€" + this.addToPizzaPrice;
+        }
+    }
+    enum SideDish{
+        CALZONE("Calzone", 15), 
+        CHICKEN_PUFF("Chicken Puff", 20),
+        MUFFIN("Muffin", 12),
+        NOTHING("No side dish", 0);
+        String sideDishName;
+        double addToPizzaPrice;
+        private SideDish(String sideDishName,int addToPizzaPrice){
+            this.sideDishName = sideDishName;
+            this.addToPizzaPrice = addToPizzaPrice;
+        }
+        public String getSideDishName(){
+            return this.sideDishName;
+        }
+        public double getAddToPizzaPrice(){
+            return this.addToPizzaPrice;
+        }
+        public String toString(){
+            return this.sideDishName + ":€" + this.addToPizzaPrice;
+        }
+    }
+    enum Drinks{
+        COCA_COLA("Coca Cola", 8), 
+        COCOA_DRINK("Cocoa Drink", 10),
+        NOTHING("No drinks", 0);
+        String  drinkName;
+        double addToPizzaPrice;
+        private Drinks(String drinkName,int addToPizzaPrice){
+            this.drinkName = drinkName;
+            this.addToPizzaPrice = addToPizzaPrice;
+        }
+        public String getDrinkName(){
+            return this.drinkName;
+        }
+        public double getAddToPizzaPrice(){
+            return this.addToPizzaPrice;
+        }
+        public String toString(){
+            return this.drinkName +  ":€" + this.addToPizzaPrice;
+        }
+    }
+    static Scanner scan = new Scanner(System.in);
+    private int number = 0;
+    public void takeOrder() {
+        int right = 0;
+        while(right == 0){
+        {int a = 1;
+        for(PizzaSelection pizzaSelection : PizzaSelection.values()){
+            System.out.print(a + ".");
+            System.out.println(pizzaSelection.toString());
+            a++;
+        }}
+        System.out.println("6. Custom Pizza with a maximum of 10 toppings that you choose");
+        System.out.println("Please enter your choice (1 - 6):");
+        String str = ""; 
+        {int aa = 0;
+            while( aa == 0){
+        if (scan.hasNextLine()){
+            str = scan.nextLine();
+        }
+        switch(str){
+            case "1":
+            PizzaSelection p1 = PizzaSelection.PEPPERONI;
+            this.pizzasOrdered[number] = p1.toString();
+            this.totalOrderPrice += p1.price;
+            aa = 1;
+            break;
+            case "2":
+            PizzaSelection p2 = PizzaSelection.HAWAIIAN;
+            this.pizzasOrdered[number] = p2.toString();
+            this.totalOrderPrice += p2.price;
+            aa = 1;
+            break;
+            case "3":
+            PizzaSelection p3 = PizzaSelection.VEGGIE;
+            this.pizzasOrdered[number] = p3.toString();
+            this.totalOrderPrice += p3.price;
+            aa = 1;
+            break;
+            case "4":
+            PizzaSelection p4 = PizzaSelection.BBQ_CHICKEN;
+            this.pizzasOrdered[number] = p4.toString();
+            this.totalOrderPrice += p4.price;
+            aa = 1;
+            break;
+            case "5":
+            PizzaSelection p5 = PizzaSelection.EXTRAVAGANZA;
+            this.pizzasOrdered[number] = p5.toString();
+            this.totalOrderPrice += p5.price;
+            aa = 1;
+            break;
+            case "6":
+            {int a = 1;
+            for(PizzaToppings pizzaToppings : PizzaToppings.values()){
+                System.out.print(a + ".");
+                System.out.println(pizzaToppings.toString() + " ");
+                a++;
+            }}
+            System.out.println("enter a maximum of 10 choices(Separate with spaces)(Enter only the numbers)");
+            if (scan.hasNextLine()) {
+                str = scan.nextLine();
+            }
+            String[] str1 = str.split(" ",0);
+            int length = str1.length;
+            double oneprice = 0;
+            String pizzasOrdereds1 = null;
+            String pizzasOrdereds2 = null;
+            String pizzasOrdereds3 = null;
+            PizzaToppings[] pizzaToppings = PizzaToppings.values();
+            for(int a = 0;a < length;a++){
+                int b = Integer.parseInt(str1[a]);
+                pizzasOrdereds1 = pizzaToppings[b - 1].topping + ",";
+                pizzasOrdereds2 = pizzasOrdereds3; 
+                pizzasOrdereds3 = pizzasOrdereds2 + pizzasOrdereds1;
+                oneprice += pizzaToppings[b - 1].toppingPrice;
+            }
+            this.totalOrderPrice += PIZZA_BASE_PRICE + oneprice;
+            this.pizzasOrdered[number] = "Custom Pizza with " + pizzasOrdereds3 + ":€" + (PIZZA_BASE_PRICE + oneprice);
+            aa = 1;
+            break;
+            default:
+            System.out.println("Please enter valid content");
+            break;
+        }
+    }}
 
         System.out.println("What size should your pizza be?");
-        System.out.println("1. Large");
-        System.out.println("2. Medium");
-        System.out.println("3. Small");
-        System.out.println("Enter only one choice (1, 2, or 3):");;
-        int a2 = 0;
-        while(a2 == 0){
+        {int a = 1;
+        for(PizzaSize PizzaSize : PizzaSize.values()){
+            System.out.print(a + ".");
+            System.out.println(PizzaSize.toString());
+            a++;
+        }}
+        System.out.println("Enter only one choice (1, 2, or 3):");
+        {int a = 0;
+            PizzaSize[] pizzaSize = PizzaSize.values();
+        while(a == 0){
             if (scan.hasNextLine()) {
             str = scan.nextLine();
          }
          switch(str){
             case "1":
-            a2 = 1;
+            this.totalOrderPrice += pizzaSize[0].addToPizzaPrice; 
+            this.pizzaSizesOrdered[number] = pizzaSize[0].toString();
+            a = 1;
             break;
             case "2":
-            a2 = 1;
+            this.totalOrderPrice += pizzaSize[1].addToPizzaPrice; 
+            this.pizzaSizesOrdered[number] = pizzaSize[1].toString();
+            a = 1;
             break;
             case "3":
-            a2 = 1;
+            this.totalOrderPrice += pizzaSize[2].addToPizzaPrice; 
+            this.pizzaSizesOrdered[number] = pizzaSize[2].toString();
+            a = 1;
             break;
             default:
             System.out.println("Invalid choice(s). Please pick only from the given list:");
             break;
          }
-         this.sizeChoice = Integer.parseInt(str);
-         this.pizzaSize = switch(str){
-            case "1" -> "Large";
-            case "2" -> "Medium";
-            case "3" -> "Small";
-            default -> "";
-        };
-    }
+    }}
 
         System.out.println("Do you want extra cheese (Y/N):");
         if (scan.hasNextLine()) {
@@ -211,88 +357,96 @@ public class SliceoHeaven {
         this.extraCheese = str;
         
         System.out.println("Following are the side dish that go well with your pizza:");
-        System.out.println("1. Calzone");
-        System.out.println("2. Garlic bread");
-        System.out.println("3. Chicken puff");
-        System.out.println("4. Muffin");
-        System.out.println("5. Nothing for me");
-        System.out.println("What would you like? Pick one (1, 2, 3,…):");
-        int a3 = 0;
-        while(a3 == 0){
+        {int a = 1;
+        for(SideDish sideDish : SideDish.values()){
+            System.out.print(a + ".");
+            System.out.println(sideDish.toString());
+            a++;
+        }}
+        System.out.println("Enter only one choice (1, 2, 3, or 4):");
+        {int a = 0;
+            SideDish[] sideDish = SideDish.values();
+        while(a == 0){
             if (scan.hasNextLine()) {
             str = scan.nextLine();
          }
          switch(str){
             case "1":
-            a3 = 1;
+            this.totalOrderPrice += sideDish[0].addToPizzaPrice; 
+            this.sideDishesOrdered[number] = sideDish[0].toString();
+            a = 1;
             break;
             case "2":
-            a3 = 1;
+            this.totalOrderPrice += sideDish[1].addToPizzaPrice; 
+            this.sideDishesOrdered[number] = sideDish[1].toString();
+            a = 1;
             break;
             case "3":
-            a3 = 1;
+            this.totalOrderPrice += sideDish[2].addToPizzaPrice; 
+            this.sideDishesOrdered[number] = sideDish[2].toString();
+            a = 1;
             break;
             case "4":
-            a3 = 1;
-            break;
-            case "5":
-            a3 = 1;
+            this.totalOrderPrice += sideDish[3].addToPizzaPrice; 
+            this.sideDishesOrdered[number] = sideDish[3].toString();
+            a = 1;
             break;
             default:
             System.out.println("Invalid choice(s). Please pick only from the given list:");
             break;
          }
-         this.sideDishChoice = Integer.parseInt(str);
-         this.sideDish = switch(str){
-            case "1" -> "Calzone";
-            case "2" -> "Garlic bread";
-            case "3" -> "Chicken puff";
-            case "4" -> "Muffin";
-            case "5" -> "Nothing for me";
-            default -> "";
-        };
-    }
+    }}
+
 
         System.out.println("Choose from one of the drinks below. We recommend Coca Cola:");
-        System.out.println("1. Coca Cola");
-        System.out.println("2. Cold coffee");
-        System.out.println("3. Cocoa Drink");
-        System.out.println("4. No drinks for me");
-        System.out.println("Enter your choice:");
-        int a4 = 0;
-        while(a4 == 0){
+        {int a = 1;
+        for(Drinks drinks : Drinks.values()){
+            System.out.print(a + ".");
+            System.out.println(drinks.toString());
+            a++;
+        }}
+        System.out.println("Enter only one choice (1, 2, or 3):");
+        {int a = 0;
+            Drinks[] drinks = Drinks.values();
+        while(a == 0){
             if (scan.hasNextLine()) {
             str = scan.nextLine();
          }
          switch(str){
             case "1":
-            a4 = 1;
+            this.totalOrderPrice += drinks[0].addToPizzaPrice; 
+            this.drinksOrdered[number] = drinks[0].toString();
+            a = 1;
             break;
             case "2":
-            a4 = 1;
+            this.totalOrderPrice += drinks[1].addToPizzaPrice; 
+            this.drinksOrdered[number] = drinks[1].toString();
+            a = 1;
             break;
             case "3":
-            a4 = 1;
-            break;
-            case "4":
-            a4 = 1;
+            this.totalOrderPrice += drinks[2].addToPizzaPrice; 
+            this.drinksOrdered[number] = drinks[2].toString();
+            a = 1;
             break;
             default:
             System.out.println("Invalid choice(s). Please pick only from the given list:");
             break;
          }
-         this.drinkChoice = Integer.parseInt(str);
-         this.drinks = switch(str){
-            case "1" -> "Coca Cola";
-            case "2" -> "Cold coffee";
-            case "3" -> "Cocoa Drink";
-            case "4" -> "No drinks for me";
-            default -> "";
-        };
+    }}
+    System.out.println("Do you want to order another one ? (Y/N)");
+    if (scan.hasNextLine()) {
+        str = scan.nextLine();
+     }
+    if(str.equals("Y") || str.equals("y")){
+        System.out.println("OK!");
+        number++;
+    }else{
+        right = 1;
     }
-        
-
-        System.out.println("Would you like the chance to pay only half for your order? (Y/N)：");
+}
+        this.orderTotal = this.totalOrderPrice;
+        String str = "";
+        System.out.println("Would you like the chance to pay only half for your order? (Y/N):");
         if (scan.hasNextLine()) {
             str = scan.nextLine();
          }
@@ -379,30 +533,11 @@ public class SliceoHeaven {
          int date3 = Integer.parseInt(str2[2]);
          LocalDate today = LocalDate.now();
          LocalDate someDay = LocalDate.of(date1,date2,date3);
-         Period diff = Period.between(today,someDay);
-         int year = diff.getYears();
-         int month = diff.getMonths();
-         int day = diff.getDays();
-         if(year > 0){
-            a = 1;
+         Long days = ChronoUnit.DAYS.between(today, someDay);
+         if(days <= 0){
+            System.out.println("Please enter the correct date!");
          }else{
-            if(year == 0){
-                if(month > 0){
-                    a = 1;
-                }else{
-                    if(month == 0){
-                        if(day > 0){
-                            a = 1;
-                        }else{
-                            System.out.println("Please enter the correct date!");
-                        }
-                    }else{
-                        System.out.println("Please enter the correct date!");
-                    }
-                }
-            }else{
-                System.out.println("Please enter the correct date!");
-            }
+            a = 1;
          }
          this.expiryDate = str;
         }
@@ -459,16 +594,22 @@ public class SliceoHeaven {
     }
 
     public final String toString(){
+        String string1 = null;
+        String string2 = null;
+        String string3 = null;
+        for(int a = 0;a <= number;a++){
+            string1 = (a + 1) + "." + pizzasOrdered[a] + "\n" +
+            pizzaSizesOrdered[a] + "\n" +
+            sideDishesOrdered[a] + "\n" +
+            drinksOrdered[a];
+            string2 = string3;
+            string3 = string2 + "\n" + string1;
+        }
         return "********RECEIPT********" + "\n" +
         "cardNumber :" + cardNumberToDisplay + "\n" +
         "cvvNumber :" + cvv + "\n" +
-        "Order ID: " + orderID + "\n" +
-        "Order pizzaIngredients: " + ing1 + " " + ing2 + " " + ing3 +" " + pizzaIngredients + "\n" +
-        "Order size of pizza:" + pizzaSize + "\n" +
-        "Order extra cheese(Y/N):" + extraCheese + "\n" +
-        "Order sides: " + sideDish + "\n" +
-        "Order drinks: " + drinks + "\n" +
-        "Order pizzaPrice: " + pizzaPrice + "\n" +
-        "Order Total: " + orderTotal + "\n";
+        "Order ID: " + orderID + string3 +
+        "Thank you for dining with Slice-o-Heaven Pizzeria. Your order details are as follows:" + "\n" +
+        "ORDER TOTAL:€" + orderTotal;
     }
 }
